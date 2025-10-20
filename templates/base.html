@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resort Booking | {% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='room_form.css') }}">
+</head>
+<body style="padding-top: 0; padding-bottom: 0;">
+
+  <nav class="resort-navbar">
+    <div class="container">
+      <a href="{{ url_for('index') }}" class="brand">🏝 Resort Reservation </a>
+      <input type="checkbox" id="nav-toggle">
+      <label for="nav-toggle" class="menu-icon">☰</label>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        {% if is_admin() %}
+        <li><a href="{{ url_for('admin_dashboard') }}" class="text-warning">Admin Dashboard</a></li>
+        {% endif %}
+        {% if current_user.is_authenticated and not is_admin() %}
+        <li><a href="{{ url_for('my_reservations') }}">My Reservations</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Contact</a></li>
+        {% endif %}
+      </ul>
+
+      <ul class="auth-links">
+        {% if current_user.is_authenticated %}
+        <li><span class="welcome">Hello, {{ current_user.name if not is_admin() else current_user.username }}</span></li>
+        <li><a href="{{ url_for('logout') }}" class="btn-outline">Logout</a></li>
+        {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+        <li><a href="{{ url_for('register') }}" class="btn-outline">Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Flash Messages -->
+  <div class="container flash-container">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Main Content -->
+  <div class="container page-content">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>© {{ datetime.now().year }} Resort Reservation  — Your Paradise Awaits 🌅</p>
+    </div>
+  </footer>
+
+</body>
+</html>

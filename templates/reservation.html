@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Reserve Room {{ room.room_number }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Reserve Room {{ room.room_number }} ({{ room.room_type }})</h4>
+                <p class="mb-0">${{ '%.2f' | format(room.price) }} per night</p>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    {% if room.image_file %}
+                    <img src="{{ url_for('static', filename='room_images/' + room.image_file) }}" class="img-fluid rounded" alt="Image of Room {{ room.room_number }}">
+                    {% endif %}
+                </div>
+                
+                <form method="POST" action="{{ url_for('make_reservation', room_id=room.id) }}">
+                    <div class="form-group">
+                        <label for="check_in">Check-in Date</label>
+                        <input type="date" class="form-control" id="check_in" name="check_in" 
+                               min="{{ date.today() | string }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="check_out">Check-out Date</label>
+                        <input type="date" class="form-control" id="check_out" name="check_out" required>
+                    </div>
+                    <p class="alert alert-info">Note: We will automatically check if the room is available for your selected dates.</p>
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Confirm Reservation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

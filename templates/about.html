@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <h1>About Our Resort</h1>
+    <p class="lead">
+        Welcome to Resort Central, your premier destination for luxury and relaxation. We are dedicated to providing an unforgettable experience with world-class amenities and unparalleled service.
+    </p>
+    
+    <h3>Our Mission</h3>
+    <p>
+        Our mission is to create a sanctuary where guests can escape the everyday hustle. We strive for excellence in hospitality, ensuring every stay is customized, comfortable, and truly memorable.
+    </p>
+
+    <h3>Why Choose Us?</h3>
+    <ul>
+        <li><strong>Stunning Location:</strong> Situated on the pristine shores of the Azure Coast.</li>
+        <li><strong>Luxurious Rooms:</strong> Each room and suite is designed with modern elegance and comfort in mind.</li>
+        <li><strong>Seamless Booking:</strong> Our integrated online system allows for easy and secure room reservations 24/7.</li>
+        <li><strong>Dedicated Staff:</strong> Our professional team is always on hand to meet your needs.</li>
+    </ul>
+
+    <div class="mt-5 text-center">
+        <a href="{{ url_for('index') }}" class="btn">Explore Our Rooms</a>
+    </div>
+</div>
+{% endblock %}

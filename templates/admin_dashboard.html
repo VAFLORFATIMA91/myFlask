@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<section class="dashboard-container">
+  <h1 class="dashboard-title">🏝 Resort Admin Dashboard</h1>
+
+  <div class="dashboard-grid">
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>Room Management ({{ rooms | length }})</h2>
+        <a href="{{ url_for('add_room') }}" class="btn-add-room">
+            <i>➕</i> Add Room
+        </a>
+      </div>
+      <div class="card-body scrollable">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Type</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for room in rooms %}
+            <tr>
+              <td>{{ room.room_number }}</td>
+              <td>{{ room.room_type }}</td>
+              <td>${{ '%.2f' | format(room.price) }}</td>
+              <td>
+                <span class="status {% if room.status == 'Available' %}available{% else %}occupied{% endif %}">
+                  {{ room.status }}
+                </span>
+              </td>
+              <td>
+                <a href="{{ url_for('edit_room', room_id=room.id) }}" class="btn-outline small">Edit</a>
+                <form method="POST" action="{{ url_for('delete_room', room_id=room.id) }}" class="inline-form">
+                  <button type="submit" class="btn-danger small"
+                    onclick="return confirm('Are you sure you want to delete Room {{ room.room_number }}?');">
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Reservation Management -->
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h2>All Reservations ({{ reservations | length }})</h2>
+      </div>
+      <div class="card-body scrollable">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>Guest</th>
+              <th>Room</th>
+              <th>Check-in</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for res in reservations %}
+            <tr>
+              <td>{{ res.guest.name }}</td>
+              <td>{{ res.room.room_number }} ({{ res.room.room_type }})</td>
+              <td>{{ res.check_in.strftime('%Y-%m-%d') }}</td>
+              <td>
+                <span class="status {% if res.status == 'Reserved' %}reserved{% elif res.status == 'Cancelled' %}cancelled{% else %}completed{% endif %}">
+                  {{ res.status }}
+                </span>
+              </td>
+              <td>
+                {% if res.status == 'Reserved' and res.check_in > today %}
+                <form method="POST" action="{{ url_for('cancel_reservation', res_id=res.id) }}" class="inline-form">
+                  <button type="submit" class="btn-outline-danger small"
+                    onclick="return confirm('Cancel reservation (ID: {{ res.id }})?');">
+                    Cancel
+                  </button>
+                </form>
+                {% else %}
+                <span class="text-muted">No Action</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

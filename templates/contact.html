@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<div class="contact-container">
+    <h1>Get In Touch</h1>
+    <p class="lead">
+        We’re here to answer any questions you may have about our resort, rooms, or your reservations.
+    </p>
+
+    <div class="contact-cards">
+        <div class="contact-card">
+            <h4>General Inquiries</h4>
+            <p><strong>Email:</strong> meridafatima91@gmail.com</p>
+            <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+        </div>
+
+        <div class="contact-card">
+            <h4>Reservation Support</h4>
+            <p>For existing bookings or help with your reservation, please contact:</p>
+            <p><strong>Email:</strong> booking@resortcentral.com</p>
+            <p><strong>Phone:</strong> +1 (555) 987-6543</p>
+        </div>
+    </div>
+
+    <div class="contact-location">
+        <h4>📍 Our Location</h4>
+        <p>1000 Ocean Drive, Azure Coast, Resort Land</p>
+    </div>
+
+    <div class="contact-form-section">
+        <h4>💌 Send us a Message</h4>
+        <form action="{{ url_for('contact') }}" method="POST" class="contact-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
+
+            <a href="{{ url_for('index') }}">
+                <button type="button" class="btn-send">Submit Inquiry</button>
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

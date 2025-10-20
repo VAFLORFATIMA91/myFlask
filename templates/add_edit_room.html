@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='room_form.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="room_number">Room Number</label>
+                        <input type="text" class="form-control" id="room_number" name="room_number" 
+                               value="{{ room.room_number if room else '' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="room_type">Room Type</label>
+                        <select class="form-control" id="room_type" name="room_type" required>
+                            <option value="">Select a Type</option>
+                            {% set current_type = room.room_type if room else '' %}
+                            {% for type in ['Standard', 'Deluxe', 'Suite', 'Ocean View'] %}
+                                <option value="{{ type }}" {% if current_type == type %}selected{% endif %}>{{ type }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Price Per Night ($)</label>
+                        <input type="number" step="0.01" class="form-control" id="price" name="price" 
+                               value="{{ '%.2f' | format(room.price) if room else '' }}" required>
+                    </div>
+
+                    {% if room %}
+                    <div class="form-group">
+                        <label for="status">Room Status</label>
+                        <select class="form-control" id="status" name="status" required>
+                            {% set current_status = room.status if room else 'Available' %}
+                            {% for status in ['Available', 'Maintenance', 'Occupied'] %}
+                                <option value="{{ status }}" {% if current_status == status %}selected{% endif %}>{{ status }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="image_file">Room Image (PNG, JPG, GIF)</label>
+                        <input type="file" class="form-control-file" id="image_file" name="image_file" accept="image/*">
+                        {% if room and room.image_file %}
+                            <small class="form-text text-muted">Current image: {{ room.image_file }}</small>
+                            <img src="{{ url_for('static', filename='room_images/' + room.image_file) }}" style="max-width: 150px;" class="mt-2 img-thumbnail">
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn-add-room-realistic mt-3">
+                        <i>🏠</i> {{ 'Update Room' if room else 'Add Room' }}
+                    </button>
+
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn-back mt-2">← Back to Dashboard</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

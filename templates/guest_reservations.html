@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}My Reservations{% endblock %}
+
+{% block content %}
+<div class="reservations-container">
+  <h1 class="mb-4">Your Reservations ({{ current_user.name }})</h1>
+
+  {% if reservations %}
+      <div class="table-responsive">
+          <table class="table table-hover shadow-sm">
+              <thead class="thead-light">
+                  <tr>
+                      <th>#ID</th>
+                      <th>Room</th>
+                      <th>Type</th>
+                      <th>Check-in</th>
+                      <th>Check-out</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for res in reservations %}
+                  <tr>
+                      <td>{{ res.id }}</td>
+                      <td>{{ res.room.room_number }}</td>
+                      <td>{{ res.room.room_type }}</td>
+                      <td>{{ res.check_in.strftime('%Y-%m-%d') }}</td>
+                      <td>{{ res.check_out.strftime('%Y-%m-%d') }}</td>
+                      <td>
+                          <span class="badge badge-{% if res.status == 'Reserved' %}primary{% elif res.status == 'Cancelled' %}danger{% else %}secondary{% endif %}">
+                              {{ res.status }}
+                          </span>
+                      </td>
+                      <td>
+                          {% if res.status == 'Reserved' and res.check_in > today %}
+                              <form method="POST" action="{{ url_for('cancel_reservation', res_id=res.id) }}" style="display:inline;">
+                                  <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to cancel this reservation?');">
+                                      Cancel
+                                  </button>
+                              </form>
+                          {% elif res.check_in <= today and res.status == 'Reserved' %}
+                              <span class="text-muted">Check-in Passed</span>
+                          {% else %}
+                              <span class="text-muted">N/A</span>
+                          {% endif %}
+                      </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+  {% else %}
+      <p class="alert alert-info">
+        You have no reservations yet. <a href="{{ url_for('index') }}">Book a room!</a>
+      </p>
+  {% endif %}
+</div>
+{% endblock %}

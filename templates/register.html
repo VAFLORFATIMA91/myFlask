@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+  <div class="auth-card">
+    <h2 class="auth-title">Guest Registration</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email address</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="submit" class="btn-secondary">Register</button>
+    </form>
+
+    <p class="auth-link">
+      Already have an account? <a href="{{ url_for('login') }}">Login</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
