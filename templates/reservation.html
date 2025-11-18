@@ -1,3 +1,6 @@
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 {% extends "base.html" %}
 
 {% block title %}Reserve Room {{ room.room_number }}{% endblock %}
@@ -16,11 +19,48 @@
                     <img src="{{ url_for('static', filename='room_images/' + room.image_file) }}" class="img-fluid rounded" alt="Image of Room {{ room.room_number }}">
                     {% endif %}
                 </div>
-                
+
+                <div id="calendar"></div>
+
+<!-- Include FullCalendar -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    selectable: false,
+    events: async function(fetchInfo, successCallback, failureCallback) {
+      try {
+        const response = await fetch(`/room_availability/{{ room.id }}`);
+        const bookedDates = await response.json();
+
+        const events = bookedDates.map(date => ({
+          title: 'ALREADY BOOKED',
+          start: date,
+          display: 'auto',           // show it as a normal event (not background)
+          color: '#fff',             // white text
+          backgroundColor: '#ff0000',// red background
+          borderColor: '#cc0000'     // dark red border
+
+        }));
+
+        successCallback(events);
+      } catch (error) {
+        failureCallback(error);
+      }
+    }
+  });
+  calendar.render();
+});
+</script>
+
                 <form method="POST" action="{{ url_for('make_reservation', room_id=room.id) }}">
                     <div class="form-group">
                         <label for="check_in">Check-in Date</label>
-                        <input type="date" class="form-control" id="check_in" name="check_in" 
+                        <input type="date" class="form-control" id="check_in" name="check_in"
                                min="{{ date.today() | string }}" required>
                     </div>
                     <div class="form-group">
@@ -35,3 +75,4 @@
     </div>
 </div>
 {% endblock %}
+
